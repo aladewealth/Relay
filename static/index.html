@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relay · AI support automation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/styles.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><span class="logo">R</span><span>Relay</span></div>
+    <nav>
+      <a href="#/inbox" data-view="inbox">Inbox <span class="count" id="nav-inbox-count"></span></a>
+      <a href="#/escalations" data-view="escalations">Escalations <span class="count warn" id="nav-esc-count"></span></a>
+      <a href="#/analytics" data-view="analytics">Analytics</a>
+      <a href="#/simulate" data-view="simulate">Simulate message</a>
+      <a href="#/settings" data-view="settings">Settings</a>
+    </nav>
+    <div class="health" id="health">
+      <div class="health-row"><span class="dot" id="h-subq"></span><span>SubQ</span><span class="muted" id="h-subq-t">checking…</span></div>
+      <div class="health-row"><span class="dot" id="h-gen"></span><span>Generator</span><span class="muted" id="h-gen-t">checking…</span></div>
+      <div class="health-msg" id="h-msg"></div>
+    </div>
+  </aside>
+  <main id="main">
+    <div class="loading-block">Loading…</div>
+  </main>
+</div>
+<div id="toast" class="toast hidden"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>
