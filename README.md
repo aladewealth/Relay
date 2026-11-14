@@ -210,3 +210,18 @@ export SUBQ_API_KEY=...            # optional
 python app.py                      # http://localhost:7860
 python -m pytest -q tests
 ```
+
+## Deploy
+
+`app.py` exports a top-level FastAPI `app`; `requirements.txt` holds only the light dependencies. The optional local CPU model is in `requirements-local.txt`.
+
+Environment variables:
+- `SUBQ_API_KEY`: required for SubQ classification. Without it, the keyword fallback runs and every case is escalated.
+- `LLM_BASE_URL`, `LLM_API_KEY`, `LLM_MODEL`: the draft model. Any OpenAI-compatible API works, e.g. Groq's free tier with `https://api.groq.com/openai/v1` and `openai/gpt-oss-20b`.
+- `RELAY_DB_PATH`: the SQLite path. Defaults to `/tmp/relay.db`, which is ephemeral.
+
+**Vercel:** import the repo and add the environment variables. Vercel runs Python as serverless functions, so Relay switches to serverless mode automatically: drafts and the sample seed run inline, with no background workers. SQLite in `/tmp` is per instance and temporary, so conversations can disappear between requests. Use Vercel for demos, and use Render or another long-running host to keep data.
+
+**Render (recommended):** create a New Blueprint from this repo; `render.yaml` sets it up. Then fill in `SUBQ_API_KEY` and `LLM_API_KEY`. Start command: `uvicorn app:app --host 0.0.0.0 --port $PORT`.
+
+**Hugging Face Space:** use `space_app.py` as the Space's `app_file`.

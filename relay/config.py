@@ -14,6 +14,11 @@ def subq_key():
     return env("SUBQ_API_KEY")
 
 
+def serverless():
+    """True on Vercel/AWS Lambda-style hosts: no background threads survive after a response."""
+    return env("RELAY_SERVERLESS") == "1" or bool(env("VERCEL")) or bool(env("AWS_LAMBDA_FUNCTION_NAME"))
+
+
 def db_path():
     return env("RELAY_DB_PATH", "/tmp/relay.db")
 

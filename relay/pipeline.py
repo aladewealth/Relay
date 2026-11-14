@@ -3,7 +3,7 @@ import queue
 import threading
 import time
 
-from . import db
+from . import config, db
 from .classifier import analyze
 from .drafting import draft_reply
 from .routing import route
@@ -74,6 +74,13 @@ def run_draft(cid):
 
 def request_draft(cid, wait=True):
     db.update_conversation(cid, draft_status="pending")
+    if config.serverless():  # no worker thread survives the response, so draft inline
+        try:
+            run_draft(cid)
+        except Exception as e:  # noqa: BLE001
+            db.update_conversation(cid, draft={"status": "failed", "error": f"{type(e).__name__}: {e}", "text": None},
+                                   draft_status="failed")
+        return db.get_conversation(cid)["draft"]
     _ensure_worker()
     done = threading.Event()
     with _pending_lock:

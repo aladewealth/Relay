@@ -202,11 +202,14 @@ class LocalLlamaGenerator(Generator):
 class DisabledGenerator(Generator):
     name = "disabled"
 
+    def __init__(self, reason="drafting disabled (GENERATOR=none)"):
+        self.reason = reason
+
     def status(self):
-        return {"provider": self.name, "model": "none", "ready": False, "error": "drafting disabled (GENERATOR=none)"}
+        return {"provider": self.name, "model": "none", "ready": False, "error": self.reason}
 
     def generate(self, messages, max_tokens=320):
-        raise GeneratorError("drafting disabled")
+        raise GeneratorError(self.reason)
 
 
 _instance = None
@@ -222,6 +225,11 @@ def make_generator():
     if config.env("LLM_BASE_URL") or choice == "openai":
         return OpenAICompatGenerator(config.env("LLM_BASE_URL", "https://api.openai.com/v1"),
                                      config.env("LLM_API_KEY"), config.env("LLM_MODEL"))
+    import importlib.util
+    if importlib.util.find_spec("llama_cpp") is None:
+        return DisabledGenerator(
+            "no draft model configured: set LLM_BASE_URL, LLM_API_KEY and LLM_MODEL (e.g. Groq), "
+            "or install requirements-local.txt for the local model")
     return LocalLlamaGenerator()
 
 

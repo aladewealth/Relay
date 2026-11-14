@@ -1,0 +1,6 @@
+# Optional: run the draft model locally on CPU (not for Vercel)
+-r requirements.txt
+--extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu
+--only-binary=llama-cpp-python
+llama-cpp-python==0.3.36
+huggingface_hub>=0.23

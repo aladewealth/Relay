@@ -2,7 +2,7 @@
 import threading
 import time
 
-from . import pipeline
+from . import config, pipeline
 
 # (customer_name, email, channel, text, thread_key) - messages sharing a thread_key go to one conversation
 SAMPLES = [
@@ -63,5 +63,8 @@ def start():
         if _state["running"]:
             return status()
         _state.update(running=True, done=0, errors=[], started_at=time.time(), finished_at=None, conversation_ids=[])
-    threading.Thread(target=_run, daemon=True).start()
+    if config.serverless():
+        _run()
+    else:
+        threading.Thread(target=_run, daemon=True).start()
     return status()
